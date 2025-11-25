@@ -18,11 +18,11 @@ to mount this file there:
         <http_max_field_value_size>1048576</http_max_field_value_size>
         <http_max_field_name_size>1048576</http_max_field_name_size>
 
-        <!-- Memory optimization: limit per-query memory usage to 256MB -->
-        <max_memory_usage>268435456</max_memory_usage>
+        <!-- Memory optimization: limit per-query memory usage -->
+        <max_memory_usage>{{ CLICKHOUSE_USER_MAX_MEMORY_USAGE }}</max_memory_usage>
 
-        <!-- Enable spilling to disk for large operations (128MB threshold) -->
-        <max_bytes_before_external_group_by>134217728</max_bytes_before_external_group_by>
-        <max_bytes_before_external_sort>134217728</max_bytes_before_external_sort>
+        <!-- Enable spilling to disk for large operations -->
+        <max_bytes_before_external_group_by>{{ CLICKHOUSE_USER_MAX_BYTES_BEFORE_EXTERNAL_GROUP_BY }}</max_bytes_before_external_group_by>
+        <max_bytes_before_external_sort>{{ CLICKHOUSE_USER_MAX_BYTES_BEFORE_EXTERNAL_SORT }}</max_bytes_before_external_sort>
     </default>
 </profiles>

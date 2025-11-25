@@ -56,6 +56,46 @@ hooks.Filters.CONFIG_DEFAULTS.add_items(
         ("ASPECTS_ENABLE_PII", False),
         ("ASPECTS_ENABLE_EVENT_BUS_CONSUMER", False),
         ("ASPECTS_ENABLE_EVENT_BUS_PRODUCER", False),
+        ######################
+        # ClickHouse Backup and Restore Settings
+        ("CLICKHOUSE_BACKUP_DISK_TYPE", "local"),
+        ("CLICKHOUSE_BACKUP_DISK_PATH", "/var/lib/clickhouse/backups/"),
+        ("CLICKHOUSE_BACKUP_ALLOWED_DISKS", ["default", "backups"]),
+        (
+            "CLICKHOUSE_BACKUP_ALLOWED_PATHS",
+            ["/var/lib/clickhouse/", "/var/lib/clickhouse/backups/", "/tmp/"],
+        ),
+        ("CLICKHOUSE_BACKUP_ALLOW_CONCURRENT_BACKUPS", True),
+        ("CLICKHOUSE_BACKUP_ALLOW_CONCURRENT_RESTORES", True),
+        ######################
+        # ClickHouse Memory Optimization Settings
+        # Limit maximum server memory to 1GB (in bytes) by default
+        ("CLICKHOUSE_MAX_SERVER_MEMORY_USAGE", 1073741824),
+        # Reduce uncompressed cache from 8GB to 256MB
+        ("CLICKHOUSE_UNCOMPRESSED_CACHE_SIZE", 268435456),
+        # Reduce mark cache from default 5GB to 128MB
+        ("CLICKHOUSE_MARK_CACHE_SIZE", 134217728),
+        # Limit max concurrent queries
+        ("CLICKHOUSE_MAX_CONCURRENT_QUERIES", 50),
+        # Reduce background pool threads
+        ("CLICKHOUSE_BACKGROUND_POOL_SIZE", 10),
+        ("CLICKHOUSE_BACKGROUND_MERGES_MUTATIONS_CONCURRENCY_RATIO", 3),
+        # Merge tree settings for mutations
+        (
+            "CLICKHOUSE_MERGE_TREE_FREE_ENTRIES_FOR_MUTATION",
+            20,
+        ),
+        (
+            "CLICKHOUSE_MERGE_TREE_FREE_ENTRIES_FOR_OPTIMIZE_PARTITION",
+            25,
+        ),
+        ######################
+        # ClickHouse User Profile Memory Settings
+        # Limit per-query memory usage to 256MB
+        ("CLICKHOUSE_USER_MAX_MEMORY_USAGE", 268435456),
+        # Enable spilling to disk for large operations (128MB threshold)
+        ("CLICKHOUSE_USER_MAX_BYTES_BEFORE_EXTERNAL_GROUP_BY", 134217728),
+        ("CLICKHOUSE_USER_MAX_BYTES_BEFORE_EXTERNAL_SORT", 134217728),
         ("ASPECTS_EVENT_BUS_CONSUMER_REPLICAS", 1),
         # These settings override the event-routing-backends defaults for performance
         # reasons.

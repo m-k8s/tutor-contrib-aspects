@@ -40,25 +40,26 @@ See https://clickhouse.com/docs/en/operations/backup for details.
 <storage_configuration>
     <disks>
         <backups>
-            <type>local</type>
-            <path>/var/lib/clickhouse/backups/</path>
+            <type>{{ CLICKHOUSE_BACKUP_DISK_TYPE }}</type>
+            <path>{{ CLICKHOUSE_BACKUP_DISK_PATH }}</path>
         </backups>
     </disks>
 </storage_configuration>
 
 <backups>
     <!-- Allow backup/restore to local disks -->
-    <allowed_disk>default</allowed_disk>
-    <allowed_disk>backups</allowed_disk>
+    {% for disk in CLICKHOUSE_BACKUP_ALLOWED_DISKS %}
+    <allowed_disk>{{ disk }}</allowed_disk>
+    {% endfor %}
 
     <!-- Allow backup/restore to these paths -->
-    <allowed_path>/var/lib/clickhouse/</allowed_path>
-    <allowed_path>/var/lib/clickhouse/backups/</allowed_path>
-    <allowed_path>/tmp/</allowed_path>
+    {% for path in CLICKHOUSE_BACKUP_ALLOWED_PATHS %}
+    <allowed_path>{{ path }}</allowed_path>
+    {% endfor %}
 
     <!-- Allow concurrent backups/restores -->
-    <allow_concurrent_backups>true</allow_concurrent_backups>
-    <allow_concurrent_restores>true</allow_concurrent_restores>
+    <allow_concurrent_backups>{% if CLICKHOUSE_BACKUP_ALLOW_CONCURRENT_BACKUPS %}true{% else %}false{% endif %}</allow_concurrent_backups>
+    <allow_concurrent_restores>{% if CLICKHOUSE_BACKUP_ALLOW_CONCURRENT_RESTORES %}true{% else %}false{% endif %}</allow_concurrent_restores>
 </backups>
 
 <!--
@@ -66,24 +67,24 @@ Memory optimization settings
 Reduce memory usage for low-resource environments
 -->
 
-<!-- Limit maximum server memory to 1GB (in bytes) -->
-<max_server_memory_usage>1073741824</max_server_memory_usage>
+<!-- Limit maximum server memory (in bytes) -->
+<max_server_memory_usage>{{ CLICKHOUSE_MAX_SERVER_MEMORY_USAGE }}</max_server_memory_usage>
 
-<!-- Reduce uncompressed cache from 8GB to 256MB -->
-<uncompressed_cache_size>268435456</uncompressed_cache_size>
+<!-- Uncompressed cache size -->
+<uncompressed_cache_size>{{ CLICKHOUSE_UNCOMPRESSED_CACHE_SIZE }}</uncompressed_cache_size>
 
-<!-- Reduce mark cache from default 5GB to 128MB -->
-<mark_cache_size>134217728</mark_cache_size>
+<!-- Mark cache size -->
+<mark_cache_size>{{ CLICKHOUSE_MARK_CACHE_SIZE }}</mark_cache_size>
 
 <!-- Limit max concurrent queries -->
-<max_concurrent_queries>50</max_concurrent_queries>
+<max_concurrent_queries>{{ CLICKHOUSE_MAX_CONCURRENT_QUERIES }}</max_concurrent_queries>
 
-<!-- Reduce background pool threads -->
-<background_pool_size>10</background_pool_size>
-<background_merges_mutations_concurrency_ratio>3</background_merges_mutations_concurrency_ratio>
+<!-- Background pool threads -->
+<background_pool_size>{{ CLICKHOUSE_BACKGROUND_POOL_SIZE }}</background_pool_size>
+<background_merges_mutations_concurrency_ratio>{{ CLICKHOUSE_BACKGROUND_MERGES_MUTATIONS_CONCURRENCY_RATIO }}</background_merges_mutations_concurrency_ratio>
 
-<!-- Merge tree settings for mutations (10 * 3 = 30, must be >= 25) -->
+<!-- Merge tree settings for mutations -->
 <merge_tree>
-    <number_of_free_entries_in_pool_to_execute_mutation>20</number_of_free_entries_in_pool_to_execute_mutation>
-    <number_of_free_entries_in_pool_to_execute_optimize_entire_partition>25</number_of_free_entries_in_pool_to_execute_optimize_entire_partition>
+    <number_of_free_entries_in_pool_to_execute_mutation>{{ CLICKHOUSE_MERGE_TREE_FREE_ENTRIES_FOR_MUTATION }}</number_of_free_entries_in_pool_to_execute_mutation>
+    <number_of_free_entries_in_pool_to_execute_optimize_entire_partition>{{ CLICKHOUSE_MERGE_TREE_FREE_ENTRIES_FOR_OPTIMIZE_PARTITION }}</number_of_free_entries_in_pool_to_execute_optimize_entire_partition>
 </merge_tree>
