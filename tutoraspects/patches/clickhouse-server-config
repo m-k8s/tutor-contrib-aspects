@@ -32,3 +32,58 @@ See also 'tcp_port_secure' for secure connections.
 <listen_host>::</listen_host>
 <listen_host>0.0.0.0</listen_host>
 <listen_try>1</listen_try>
+
+<!--
+Backup and Restore Configuration
+See https://clickhouse.com/docs/en/operations/backup for details.
+-->
+<storage_configuration>
+    <disks>
+        <backups>
+            <type>local</type>
+            <path>/var/lib/clickhouse/backups/</path>
+        </backups>
+    </disks>
+</storage_configuration>
+
+<backups>
+    <!-- Allow backup/restore to local disks -->
+    <allowed_disk>default</allowed_disk>
+    <allowed_disk>backups</allowed_disk>
+
+    <!-- Allow backup/restore to these paths -->
+    <allowed_path>/var/lib/clickhouse/</allowed_path>
+    <allowed_path>/var/lib/clickhouse/backups/</allowed_path>
+    <allowed_path>/tmp/</allowed_path>
+
+    <!-- Allow concurrent backups/restores -->
+    <allow_concurrent_backups>true</allow_concurrent_backups>
+    <allow_concurrent_restores>true</allow_concurrent_restores>
+</backups>
+
+<!--
+Memory optimization settings
+Reduce memory usage for low-resource environments
+-->
+
+<!-- Limit maximum server memory to 1GB (in bytes) -->
+<max_server_memory_usage>1073741824</max_server_memory_usage>
+
+<!-- Reduce uncompressed cache from 8GB to 256MB -->
+<uncompressed_cache_size>268435456</uncompressed_cache_size>
+
+<!-- Reduce mark cache from default 5GB to 128MB -->
+<mark_cache_size>134217728</mark_cache_size>
+
+<!-- Limit max concurrent queries -->
+<max_concurrent_queries>50</max_concurrent_queries>
+
+<!-- Reduce background pool threads -->
+<background_pool_size>10</background_pool_size>
+<background_merges_mutations_concurrency_ratio>3</background_merges_mutations_concurrency_ratio>
+
+<!-- Merge tree settings for mutations (10 * 3 = 30, must be >= 25) -->
+<merge_tree>
+    <number_of_free_entries_in_pool_to_execute_mutation>20</number_of_free_entries_in_pool_to_execute_mutation>
+    <number_of_free_entries_in_pool_to_execute_optimize_entire_partition>25</number_of_free_entries_in_pool_to_execute_optimize_entire_partition>
+</merge_tree>
